@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khảo Sát Trải Nghiệm Quản Lý Nhà Trọ & Căn Hộ</title>
+
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-hover: #0369a1;
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #334155;
+            --border: #cbd5e1;
+            --selected-bg: #e0f2fe;
+            --selected-border: #0284c7;
+            --radius: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 20px 12px 80px;
+            font-size: 19px; /* Cỡ chữ to ưu tiên cho người lớn tuổi */
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: white;
+            padding: 30px 24px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+            text-align: center;
+        }
+
+        .header-card h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 14px;
+            line-height: 1.3;
+        }
+
+        .header-desc {
+            font-size: 18px;
+            opacity: 0.98;
+            margin-bottom: 16px;
+            text-align: justify;
+            text-align-last: center;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .question-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .question-title {
+            font-size: 21px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .question-num {
+            background: #0284c7;
+            color: white;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .question-hint {
+            font-size: 16px;
+            color: #d97706;
+            font-weight: 700;
+            margin-bottom: 14px;
+            margin-left: 48px;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        /* Thao tác vùng bấm cực rộng (>58px) cho người cao tuổi */
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border: 2.5px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            background-color: #fff;
+            transition: all 0.15s ease;
+            user-select: none;
+            min-height: 60px;
+        }
+
+        .option-item:hover {
+            border-color: #94a3b8;
+            background-color: #f8fafc;
+        }
+
+        .option-item.selected {
+            border-color: var(--selected-border);
+            background-color: var(--selected-bg);
+        }
+
+        .option-item input[type="radio"],
+        .option-item input[type="checkbox"] {
+            width: 26px;
+            height: 26px;
+            margin-right: 16px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .option-label {
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--text-main);
+            flex-grow: 1;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 18px;
+            font-size: 19px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            margin-top: 10px;
+            outline: none;
+        }
+
+        .text-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: #059669;
+            color: white;
+            font-size: 22px;
+            font-weight: 800;
+            padding: 20px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+            transition: background-color 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #047857;
+        }
+
+        .submit-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .alert-box {
+            display: none;
+            padding: 16px;
+            background-color: #fef2f2;
+            border: 2px solid #ef4444;
+            color: #991b1b;
+            border-radius: 10px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .success-screen {
+            display: none;
+            text-align: center;
+            background: white;
+            padding: 50px 24px;
+            border-radius: var(--radius);
+            border: 3px solid #10b981;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .success-screen h2 {
+            color: #059669;
+            font-size: 28px;
+            margin-bottom: 14px;
+        }
+
+        .success-screen p {
+            font-size: 20px;
+            color: var(--text-sub);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-card">
+        <h1>📋 KHẢO SÁT CHỦ NHÀ TRỌ / CĂN HỘ</h1>
+        <p class="header-desc">
+            A/C đang đứng trước cơ hội giải phóng thời gian rảnh nếu dành 1 phút tham gia khảo sát (&lt; 10 câu). Ý kiến thực tế của Anh/Chị sẽ giúp chúng tôi hoàn thiện giải pháp hỗ trợ chủ trọ tiết kiệm thời gian vận hành hàng tháng.
+        </p>
+        <div class="header-badge">🔒 Cam kết bảo mật thông tin 100%</div>
+    </div>
+
+    <div id="errorAlert" class="alert-box">
+        Vui lòng trả lời câu hỏi còn thiếu trước khi gửi!
+    </div>
+
+    <form id="surveyForm">
+        <!-- Câu 1 -->
+        <div class="question-card">
+            <div class="question-title">
+                <span class="question-num">1</span>
+                <span>Bạn đang quản lý bao nhiêu phòng / căn hộ cho thuê?</span>
+            </div>
+            <div class="options-group">
+                <label class="option-item"><input type="radio" name="q1" value="Dưới 5 phòng"><span class="option-label">🏠 Dưới 5 phòng</span></label>
+                <label class="option-item"><input type="radio" name="q1" value="5 - 15 phòng"><span class="option-label">🏠 5 - 15 phòng</span></label>
+                <label class="option-item"><input type="radio" name="q1" value="16 - 30 phòng"><span class="option-label">🏢 16 - 30 phòng</span></label>
+                <label class="option-item"><input type="radio" name="q1" value="Trên 30 phòng"><span class="option-label">🏢 Trên 30 phòng</span></label>
+            </div>
+        </div>
+
+        <!-- Câu 2 -->
+        <div class="question-card">
+            <div class="question-title">
+                <span class="question-num">2</span>
+                <span>Dãy trọ / căn hộ nằm ở đâu so với nơi ở của bạn?</span>
+            </div>
+            <div class="options-group">
+                <label class="option-item"><input type="radio" name="q2" value="Sống cùng / Ngay bên cạnh"><span class="option-label">🏡 Sống cùng / Ngay bên cạnh</span></label>
+                <label class="option-item"><input type="radio" name="q2" value="Cách dưới 15 phút di chuyển"><span class="option-label">🛵 Cách dưới 15 phút di chuyển</span></label>
+                <label class="option-item"><input type="radio" name="q2" value="Cách 15 - 30 phút di chuyển"><span class="option-label">🚗 Cách 15 - 30 phút di chuyển</span></label>
+                <label class="option-item"><input type="radio" name="q2" value="Cách trên 30 phút di chuyển"><span class="option-label">📍 Cách trên 30 phút di chuyển</span></label>
+            </div>
+        </div>
+
+        <!-- Câu 3 -->
+        <div class="question-card">
+            <div class="question-title">
+                <span class="question-num">3</span>
+                <span>Tổng thời gian bạn dành cho việc [Chụp điện nước + Tính tiền + Gửi hóa đơn] mỗi tháng là bao nhiêu?</span>
+            </div>
+            <div class="options-group">
+                <label class="option-item"><input type="radio" name="q3" value="Dưới 30 phút"><span class="option-label">⚡ Dưới 30 phút</span></label>
+                <label class="option-item"><input type="radio" name="q3" value="30 phút - 1 tiếng"><span class="option-label">⏱️ 30 phút - 1 tiếng</span></label>
+                <label class="option-item"><input type="radio" name="q3" value="1 tiếng - 2 tiếng"><span class="option-label">⏳ 1 tiếng - 2 tiếng</span></label>
+                <label class="option-item"><input type="radio" name="q3" value="Trên 2 tiếng"><span class="option-label">🕰️ Trên 2 tiếng</span></label>
+            </div>
+        </div>
+
+        <!-- Câu 4 -->
+        <div class="question-card">
+            <div class="question-title">
+                <span class="question-num">4</span>
+                <span>Bạn đang quản lý việc thu chi & điện nước bằng cách nào?</span>
+            </div>
+            <div class="options-group">
+                <label class="option-item"><input type="radio" name="q4" value="Sổ sách ghi tay"><span class="option-label">📖 Sổ sách ghi tay</span></label>
+                <label class="option-item"><input type="radio" name="q4" value="Excel / Google Sheet"><span class="option-label">💻 Excel / Google Sheet</span></label>
+                <label class="option-item"><input type="radio" name="q4" value="Phần mềm trả phí (AppHostel, iTrọ, KiotViet...)"><span class="option-label">📲 Phần mềm trả phí</span></label>
+                <label class="option-item"><input type="radio" name="q4" value="Thuê người quản lý hoàn toàn"><span class="option-label">🤝 Thuê người quản lý hoàn toàn</span></label>
+            </div>
+        </div>
+
+        <!-- Câu 5 -->
+        <div class="question-card">
+            <div class="question-title">
+                <span class="question-num">5</span>
+                <span>Bạn gửi hóa đơn và nhắc tiền trọ qua kênh nào chính?</span>
+            </div>
+            <div class="options-group">
+                <label class="option-item"><input type="radio" name="q5" value="Zalo"><span class="option-label">💬 Zalo</span></label>
+                <label class="option-item"><input type="radio" name="q5" value="Facebook Messenger"><span class="option-label">💙 Facebook Messenger</span></label>
+                <label class="option-item"><input type="radio" name="q5" value="SMS / Gọi điện"><span class="option-label">📞 SMS / Gọi điện</span></label>
+                <label class="option-item"><input type="radio" name="q5" value="Gặp trực tiếp / Đưa giấy"><span class="option-label">📝 Gặp trực tiếp / Đưa giấy</span></label>
+            </div>
+        </div>
+
+        <!-- Câu 6 -->
+        <div class="question-card">
+            <div class="question-title">
+                <span class="question-num">6</span>
+                <span>Khâu nào trong quản lý trọ làm bạn MỆT MỎI nhất?</span>
+            </div>
+            <div class="question-hint">⚠️ Được chọn tối đa 2 đáp án</div>
+            <div class="options-group">
+                <label class="option-item"><input type="checkbox" name="q6" value="Đi từng phòng chép số điện/nước"><span class="option-label">🚶 Đi từng phòng chép số điện/nước</span></label>
+                <label class="option-item"><input type="checkbox" name="q6" value="Nhập số liệu, tính toán nhầm lẫn bị khách khiếu nại"><span class="option-label">❌ Nhập số liệu nhầm lẫn, bị khiếu nại</span></label>
+                <label class="option-item"><input type="checkbox" name="q6" value="Soạn tin nhắn gửi hóa đơn cho từng người"><span class="option-label">📩 Soạn tin nhắn gửi hóa đơn cho từng người</span></label>
+                <label class="option-item"><input type="checkbox" name="q6" value="Theo dõi và nhắc nợ người chậm thanh toán"><span class="option-label">🔔 Theo dõi và nhắc nợ người chậm trả</span></label>
+            </div>
+        </div>
+
+        <!-- Câu 7 -->
+        <div class="question-card">
+            <div class="question-title">
+                <span class="question-num">7</span>
+                <span>Nếu có hệ thống Web-link tự động gửi qua Zalo cho người thuê, buộc họ chụp ảnh đồng hồ trực tiếp (có AI đọc số & chống chụp ảnh cũ), bạn có sẵn sàng giao việc chụp ảnh cho người thuê không?</span>
+            </div>
+            <div class="options-group">
+                <label class="option-item"><input type="radio" name="q7" value="Có, quá tiện cho cả 2 bên"><span class="option-label">✅ Có, quá tiện cho cả 2 bên</span></label>
+                <label class="option-item"><input type="radio" name="q7" value="Cần dùng thử để xem người thuê có hợp tác không"><span class="option-label">🤔 Cần dùng thử để xem người thuê hợp tác không</span></label>
+                <label class="option-item"><input type="radio" name="q7" value="Không, tôi vẫn muốn tự tay đi kiểm tra"><span class="option-label">❌ Không, tôi vẫn muốn tự tay kiểm tra</span></label>
+            </div>
+        </div>
+
+        <!-- Câu 8 -->
+        <div class="question-card">
+            <div class="question-title">
+                <span class="question-num">8</span>
+                <span>Nếu để NGƯỜI THUÊ TỰ CHỤP ảnh đồng hồ gửi lên hệ thống, điều gì làm bạn LO NGẠI NHẤT?</span>
+            </div>
+            <div class="question-hint">⚠️ Được chọn tối đa 2 đáp án</div>
+            <div class="options-group">
+                <label class="option-item"><input type="checkbox" name="q8" value="Sợ người thuê gian lận (chụp ảnh cũ, chỉnh sửa ảnh, cố tình chụp mờ)"><span class="option-label">🕵️ Sợ người thuê gian lận (ảnh cũ, mờ)</span></label>
+                <label class="option-item"><input type="checkbox" name="q8" value="Sợ người thuê quên / không chịu chụp đúng hạn"><span class="option-label">⏰ Sợ người thuê quên / không chụp đúng hạn</span></label>
+                <label class="option-item"><input type="checkbox" name="q8" value="Người thuê trọ không thạo công nghệ để thao tác"><span class="option-label">👵 Người thuê không thạo công nghệ</span></label>
+                <label class="option-item"><input type="checkbox" name="q8" value="Tôi không lo ngại gì, việc này giúp tiết kiệm nhiều thời gian"><span class="option-label">👍 Không lo ngại gì, giúp tiết kiệm thời gian</span></label>
+            </div>
+        </div>
+
+        <!-- Câu 9 -->
+        <div class="question-card">
+            <div class="question-title">
+                <span class="question-num">9</span>
+                <span>Số điện thoại hoặc Zalo nhận dùng thử miễn phí (Beta):</span>
+            </div>
+            <input type="text" name="q9" class="text-input" placeholder="Nhập SĐT / Zalo (không bắt buộc)...">
+        </div>
+
+        <button type="submit" id="submitBtn" class="submit-btn">GỬI PHẢN HỎI NGAY ➔</button>
+    </form>
+
+    <div id="successScreen" class="success-screen">
+        <h2>🎉 CẢM ƠN BẠN ĐÃ HOÀN THÀNH!</h2>
+        <p>Thông tin của bạn đã được hệ thống ghi nhận thành công.</p>
+    </div>
+</div>
+
+<script>
+    const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScVgcFcwvB-2Ya3KAhMFTJPm3FwEni6EXlLmImqVnfNiGOyDA/formResponse";
+
+    const FIELD_MAPPING = {
+        q1: "entry.2074182635", // Thay bằng entry.ID thực tế từ Form
+        q2: "entry.1911164368",
+        q3: "entry.810556529",
+        q4: "entry.530312198",
+        q5: "entry.1894809318",
+        q6: "entry.911769146",
+        q7: "entry.1836911703",
+        q8: "entry.2122084443",
+        q9: "entry.1998311387"
+    };
+
+    // UI Feedback & Checkbox Limit
+    document.querySelectorAll('.option-item').forEach(item => {
+        const input = item.querySelector('input');
+        if (!input) return;
+
+        input.addEventListener('change', () => {
+            const name = input.name;
+
+            if (input.type === 'checkbox') {
+                const checkedCount = document.querySelectorAll(`input[name="${name}"]:checked`).length;
+                if (checkedCount > 2) {
+                    input.checked = false;
+                    alert('Câu này chỉ được chọn tối đa 2 đáp án!');
+                    return;
+                }
+            } else if (input.type === 'radio') {
+                document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    r.closest('.option-item').classList.remove('selected');
+                });
+            }
+
+            if (input.checked) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+    });
+
+    // Submit Handler
+    const form = document.getElementById('surveyForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorAlert = document.getElementById('errorAlert');
+    const successScreen = document.getElementById('successScreen');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorAlert.style.display = 'none';
+
+        for (let i = 1; i <= 8; i++) {
+            const checked = form.querySelector(`input[name="q${i}"]:checked`);
+            if (!checked) {
+                errorAlert.innerText = `Bạn chưa chọn đáp án cho Câu ${i}!`;
+                errorAlert.style.display = 'block';
+                errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Đang gửi dữ liệu...";
+
+        const payload = new URLSearchParams();
+
+        ['q1', 'q2', 'q3', 'q4', 'q5', 'q7', 'q9'].forEach(key => {
+            const el = form.querySelector(`input[name="${key}"]:checked`) || form.querySelector(`input[name="${key}"][type="text"]`);
+            if (el && el.value.trim() !== '') {
+                payload.append(FIELD_MAPPING[key], el.value.trim());
+            }
+        });
+
+        ['q6', 'q8'].forEach(key => {
+            const checkedItems = form.querySelectorAll(`input[name="${key}"]:checked`);
+            checkedItems.forEach(box => {
+                payload.append(FIELD_MAPPING[key], box.value);
+            });
+        });
+
+        try {
+            await fetch(GOOGLE_FORM_ACTION_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: payload.toString()
+            });
+
+            form.style.display = 'none';
+            successScreen.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        } catch (err) {
+            alert("Có lỗi kết nối. Vui lòng thử lại!");
+            submitBtn.disabled = false;
+            submitBtn.innerText = "GỬI PHẢN HỎI NGAY ➔";
+        }
+    });
+</script>
+
+</body>
+</html>
