@@ -78,17 +78,17 @@
                 <form id="leadForm" onsubmit="handleSubmit(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Họ và tên *</label>
-                        <input type="text" required placeholder="Nguyễn Văn A" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm">
+                        <input type="text" name="fullname" required placeholder="Nguyễn Văn A" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Số điện thoại / Zalo *</label>
-                        <input type="tel" required pattern="[0-9]{10,11}" placeholder="0901234567" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm">
+                        <input type="tel" name="phone" required pattern="[0-9]{10,11}" placeholder="0901234567" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Số lượng phòng đang quản lý</label>
-                        <select class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-white">
+                        <select name="room_count" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-white">
                             <option value="1-10">Dưới 10 phòng</option>
                             <option value="10-30" selected>10 - 30 phòng</option>
                             <option value="30-50">30 - 50 phòng</option>
@@ -151,12 +151,95 @@
     </footer>
 
     <script>
-        function handleSubmit(e) {
-            e.preventDefault();
-            // Code bắn webhook (Google Sheet / N8n / Backend API) ở đây
-            document.getElementById('leadForm').classList.add('hidden');
-            document.getElementById('successMessage').classList.remove('hidden');
+
+        // Khai báo thông tin Telegram (Thay bằng token và chat_id thật)
+        const BOT_TOKEN = '8860343215:AAEtfxoMwUYRL2lFMgeaMNW_3k3gSl0EWv0';
+        const CHAT_ID = '2092869041';
+        const ENDPOINT_URL = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const successMessage = document.getElementById('successMessage');
+
+            // 1. Trích xuất Payload
+            const formData = new FormData(form);
+            const payload = Object.fromEntries(formData.entries());
+
+            // Clean & Format data
+            payload.fullname = payload.fullname ? payload.fullname.trim() : 'Chưa nhập';
+            payload.phone = payload.phone ? payload.phone.trim() : 'Chưa nhập';
+            payload.room_count = payload.room_count || 'Chưa chọn';
+
+            // 2. Lock UI & Bật Loading Indicator
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <span class="inline-flex items-center justify-center gap-2">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Đang xử lý...
+                </span>`;
+
+            // 3. Setup Timeout 8 giây
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+            // Format message bằng HTML
+            const htmlMessage = 
+                `🔥 <b>LEAD MỚI TỪ LANDING PAGE</b>\n\n` +
+                `<b>👤 Họ tên:</b> ${payload.fullname}\n` +
+                `<b>📞 SĐT/Zalo:</b> ${payload.phone}\n` +
+                `<b>🏠 Số phòng:</b> ${payload.room_count}\n` +
+                `<b>⏰ Thời gian:</b> ${new Date().toLocaleString('vi-VN')}`;
+
+            try {
+                const response = await fetch(ENDPOINT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: htmlMessage,
+                        parse_mode: 'HTML' // Chuyển sang HTML
+                    }),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`Telegram Error ${response.status}: ${errorData.description}`);
+                }
+
+                // 4. Trạng thái thành công
+                form.classList.add('hidden');
+                successMessage.classList.remove('hidden');
+                localStorage.setItem('troauto_lead_submitted', 'true');
+
+            } catch (error) {
+                clearTimeout(timeoutId);
+
+                let userErrorMsg = 'Có lỗi xảy ra trong quá trình gửi. Vui lòng thử lại!';
+                if (error.name === 'AbortError') {
+                    userErrorMsg = 'Kết nối mạng bị quá thời gian (Timeout). Vui lòng thử lại!';
+                }
+
+                alert(userErrorMsg);
+                console.error('Submit lead failed:', error.message);
+
+                // Restore button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
         }
+        
     </script>
 </body>
 </html>
