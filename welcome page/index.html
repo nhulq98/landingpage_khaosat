@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tự động hóa Quản lý Nhà trọ | Chấm dứt đi ghi số điện nước</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,18 +78,24 @@
 
                 <form id="leadForm" onsubmit="handleSubmit(event)" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Họ và tên *</label>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">
+                            Họ và tên <span class="text-red-500">*</span>
+                        </label>
                         <input type="text" name="fullname" required placeholder="Nguyễn Văn A" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Số điện thoại / Zalo *</label>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">
+                            Số điện thoại / Zalo <span class="text-red-500">*</span>
+                        </label>
                         <input type="tel" name="phone" required pattern="[0-9]{10,11}" placeholder="0901234567" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Số lượng phòng đang quản lý</label>
-                        <select name="room_count" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-white">
+                        <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">
+                            Số lượng phòng đang quản lý <span class="text-red-500">*</span>
+                        </label>
+                        <select name="room_count" required class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm bg-white">
                             <option value="1-10">Dưới 10 phòng</option>
                             <option value="10-30" selected>10 - 30 phòng</option>
                             <option value="30-50">30 - 50 phòng</option>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+    
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#0369A1" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="120" ry="120" fill="url(#skyGradient)" />
+
+  <path d="M 136 128 
+           H 376 
+           C 387.046 128, 396 136.954, 396 148 
+           V 172 
+           C 396 183.046, 387.046 192, 376 192 
+           H 286 
+           V 364 
+           C 286 377.255, 275.255 388, 262 388 
+           H 250 
+           C 236.745 388, 226 377.255, 226 364 
+           V 192 
+           H 136 
+           C 124.954 192, 116 183.046, 116 172 
+           V 148 
+           C 116 136.954, 124.954 128, 136 128 Z" 
+        fill="#FFFFFF" 
+        filter="url(#shadow)" />
+</svg>
